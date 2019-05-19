@@ -22,8 +22,15 @@ describe('unsorted', () => {
         .to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
-    it('unevenly', () => {
-        expect(quantile(3, [5, 6, 7, 8, 1, 2, 3, 4]))
-        .to.eql([[1, 2, 3], [4, 5, 6], [7, 8]]);
+    describe('unevenly', () => {
+      it('', () => {
+          expect(quantile(3, [5, 6, 7, 8, 1, 2, 3, 4]))
+          .to.eql([[1, 2, 3], [4, 5, 6], [7, 8]]);
+      });
+
+      it('with duplicates on the split boundary', () => {
+          expect(quantile(3, [5, 6, 5, 3, 1, 2, 3, 4]))
+          .to.eql([[1, 2, 3], [3, 4, 5], [5, 6]]);
+      });
     });
 });

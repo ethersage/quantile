@@ -6,9 +6,15 @@ Calculates [quantiles](https://en.wikipedia.org/wiki/Quantile) and the correspon
 
 #### Note: when two adjoining buckets have the same number of items, the quantile should be calculated as the average between the last item of the previous bucket and the first item of the next bucket. This library does not currently do that calculation and defaults to using the last item of the previous bucket as the boundary or quantile. Unevenly distributed buckets that produce a remainder will always add an extra items to each previous bucket until the remainer is exhausted. In this case, earlier buckets will have 1 more item than later buckets, depending on `input.length / n`.
 
+## Setup
+
+```bash
+npm i @ethersage/quantile --save
+```
+
 ## Usage
 
-```
+```js
 const { bucket, quantile } = require('@ethersage/quantile');
 
 bucket(2, [5, 6, 7, 8, 1, 2, 3, 4])); // => [[1, 2, 3, 4], [5, 6, 7, 8]]

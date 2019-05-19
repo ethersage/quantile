@@ -3,21 +3,45 @@
  * (splitLength: number, items: array) => { split: array, remaining: array }
  */
 
-const getSplitByLengthAndRemainder = splitFn => (bucketLength, remainder, items) => splitFn(bucketLength + remainder, items);
+const curry = require('lodash.curry');
 
-const splitByLength = (splitLength, items) => ({
-  currentItems: items.slice(0, splitLength),
-  nextItems: items.slice(splitLength),
+/**
+ * @typedef {Object} Split
+ * @property {Array} current Array<T> The items that were split off
+ * @property {Array} next Array<T> The items that were split off
+ */
+
+/**
+ * @param {Function} splitFn (splitLength: Number, items: Array<T>) => {}
+ * @param {Number} bucketLength Length of items to split off front
+ * @param {Number} remainder Number of extra items to split off front
+ * @param {Array} items Array<T> Items to split on
+ *
+ * @returns {Split} Current items split off and the remaining items
+ */
+const splitByLengthAndRemainder = curry((splitFn, bucketLength, remainder, items) => splitFn(bucketLength + remainder, items));
+
+/**
+ * Split some items off the front of an array
+ *
+ * @param {Number} splitLength Length of items to split off front
+ * @param {Array} items Array<T> Items to split on
+ *
+ * @returns {Split} Current items split off and the remaining items
+ */
+const splitSegmentByLength = (splitLength, items) => ({
+  current: items.slice(0, splitLength),
+  next: items.slice(splitLength),
 });
 
-const splitByLengthAndRemainder = getSplitByLengthAndRemainder(splitByLength);
+const splitSegment = splitByLengthAndRemainder(splitSegmentByLength);
 
 const split = (bucketLength, remainder, nextItems, currentItems = []) => {
   if (!nextItems.length) {
     return currentItems || [];
   }
 
-  const { currentItems: current, nextItems: next } = splitByLengthAndRemainder(bucketLength, remainder ? 1: 0, nextItems);
+  const { current, next } = splitSegment(bucketLength, remainder ? 1: 0, nextItems);
 
   return split(
     bucketLength,
@@ -28,7 +52,8 @@ const split = (bucketLength, remainder, nextItems, currentItems = []) => {
 }
 
 module.exports = {
-  splitByLength,
   splitByLengthAndRemainder,
+  splitSegment,
+  splitSegmentByLength,
   split,
 };

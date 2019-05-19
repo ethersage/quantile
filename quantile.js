@@ -60,7 +60,7 @@ const bucket = curry((sortFn, n, items) => {
  * @returns {Array<Number>} n-quantiles
  */
 
-const quantile = curry((sortFn = sort) => (n, items) => {
+const quantile = curry((sortFn ,n, items) => {
   const buckets = bucket(sortFn)(n)(items);
 
   return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);

@@ -15,6 +15,13 @@ describe('splitByLength', () => {
       nextItems: [4],
     });
   });
+
+  it('overshot', () => {
+    expect(splitByLength(5, [1, 2, 3, 4])).to.eql({
+      currentItems: [1, 2, 3, 4],
+      nextItems: [],
+    });
+  });
 });
 
 describe('splitWithRemainder', () => {

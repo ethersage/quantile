@@ -15,3 +15,15 @@ describe('sorted', () => {
         .to.eql([[1, 2, 3], [4, 5, 6], [7, 8]]);
     });
 });
+
+describe('unsorted', () => {
+    it('evenly', () => {
+        expect(quantile(2, [5, 6, 7, 8, 1, 2, 3, 4]))
+        .to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
+    });
+
+    it('unevenly', () => {
+        expect(quantile(3, [5, 6, 7, 8, 1, 2, 3, 4]))
+        .to.eql([[1, 2, 3], [4, 5, 6], [7, 8]]);
+    });
+});

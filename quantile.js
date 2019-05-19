@@ -18,12 +18,16 @@ const sort = numbers => numbers.sort(n => n);
 const genericQuantile = (sortFn, n, items) => {
     const { initialBucketLength, remainder } = countPerBucket(items.length, n);
 
-    return split(initialBucketLength, remainder, items);
+    return split(initialBucketLength, remainder, sortFn(items));
 };
 
-const sortBy = sortFn => (...args) => genericQuantile(sortFn, ...args);
+const sortBy = sortPredicate => (...args) => {
+  const sortFn = items => items.sort(sortPredicate);
 
-const quantile = sortBy(i => i);
+  return genericQuantile(sortFn, ...args);
+}
+
+const quantile = sortBy();
 
 module.exports = {
   quantile,

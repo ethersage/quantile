@@ -31,4 +31,6 @@ const cutPoint = curry((avgFn, prev, current, i, items) => {
   return [...prev, value];
 });
 
-module.exports = { cutPoint };
+const cutPoints = curry((avgFn, buckets) => buckets.reduce(cutPoint(avgFn), []));
+
+module.exports = { cutPoints };

@@ -17,7 +17,7 @@ const flow = require('lodash.flow');
 const { sort } = require('./sort');
 const { average } = require('./average');
 const { bucket, countPerBucket } = require('./bucket');
-const { cutPoint } = require('./cutPoint.js');
+const { cutPoints } = require('./cutPoint.js');
 
 /**
  * Returns the n-quantile set for a list of numbers. This function is curried so it can be invoked with 1, 2 or 3 arguments.
@@ -36,7 +36,7 @@ const { cutPoint } = require('./cutPoint.js');
  */
 const quantile = curry((sortFn, avgFn, n, items) => flow([
   bucket(sortFn, n),
-  buckets => buckets.reduce(cutPoint(avgFn), []),
+  cutPoints(avgFn),
 ])(items));
 
 const numericalQuantile = quantile(sort, average)

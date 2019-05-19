@@ -1,18 +1,24 @@
 /**
- * (numbers: Array<numbers>, numBuckets) => [[],[]]
+ * (n: number, numbers: Array<numbers>) => [[]: array<numbers>,[array]<numbers>]
  *
- * [1,9,5,1,2,4,9,8] => [[1,1,2,4], [5,8,9,9]]
+ * Given a number of subsets n and an array of numbers, return the n-quantiles
+ * as an array of arrays.
+ *
+ * Example of 2-quantile: [1,9,5,1,2,4,9,8] => [[1,1,2,4], [5,8,9,9]]
+ *
+ * We can make this even more generic to accept a sorting mechanism.
+ *
+ * Quantiles: https://en.wikipedia.org/wiki/Quantile
  */
 
 const countPerBucket = require('./countPerBucket');
 const { split } = require('./split');
 const sort = numbers => numbers.sort(n => n);
 
-// (arr, n) => [[],[]]
-const quantile = (n, arr) => {
-    const { initialBucketLength, remainder } = countPerBucket(arr.length, n);
+const quantile = (sortFn, n, items) => {
+    const { initialBucketLength, remainder } = countPerBucket(items.length, n);
 
-    return split(initialBucketLength, remainder, arr);
+    return split(initialBucketLength, remainder, items);
 };
 
 module.exports = quantile;

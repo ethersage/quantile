@@ -2,7 +2,7 @@
   "name": "@ethersage/quantile",
   "version": "0.0.2",
   "description": "Divide arrays into n-quantiles",
-  "main": "quantile.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ethersage/quantile.git"

@@ -5,15 +5,15 @@
  * An n-quantile is a set of n - 1 numbers where each number is the dividing line.
  * The median is the 2-quantile.
  *
- * Example of 2-quantile (median): [1,9,5,1,2,4,9,8] => [4]
- * Example of a 3-quantile: [5, 6, 7, 8, 1, 2, 3, 4] => [3, 6]
+ * Example of 2-quantile (median): [1,9,5,1,2,4,9,8] => [4.5]
+ * Example of a 3-quantile: [5, 6, 7, 8, 1, 2, 3, 4] => [3.5, 6]
  *
  * Quantiles: https://en.wikipedia.org/wiki/Quantile
  */
 
 const curry = require('lodash.curry');
 
-const countPerBucket = require('./countPerBucket');
+const { countPerBucket } = require('./countPerBucket');
 const { split } = require('./split');
 
 /**

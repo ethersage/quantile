@@ -7,7 +7,7 @@ const {
   quantile,
   quartile,
   tercile,
-} = require('./quantile');
+} = require('./');
 
 describe('bucket', () => {
   describe('evenly', () => {

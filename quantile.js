@@ -14,26 +14,28 @@
 
 const countPerBucket = require('./countPerBucket');
 const { split } = require('./split');
-const sort = numbers => numbers.sort(n => n);
+const sort = arr => arr.sort();
 
-const getBucket = (sortFn, n, items) => {
+const getBucket = (sortFn = sort) => (n, items) => {
     const { initialBucketLength, remainder } = countPerBucket(items.length, n);
 
     return split(initialBucketLength, remainder, sortFn(items));
 };
 
-const sortBy = sortPredicate => (...args) => {
-  const sortFn = items => items.sort(sortPredicate);
+const bucket = getBucket();
 
-  return getBucket(sortFn, ...args);
-}
-
-const bucket = sortBy();
-
-const quantile = (n, items) => {
-  const buckets = bucket(n, items);
-  return buckets.slice(0, buckets.length - 1).map(bucket => bucket[bucket.length - 1]);
+const getQuantile = (sortFn = sort) => (n, items) => {
+  const bucketFn = getBucket(sortFn);
+  const buckets = bucketFn(n, items);
+  return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);
 };
+
+const quantile = getQuantile();
+
+const sortBy = sortFn => ({
+  bucket: getBucket(sortFn),
+  quantile: getQuantile(sortFn),
+})
 
 module.exports = {
   bucket,

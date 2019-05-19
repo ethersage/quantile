@@ -11,6 +11,8 @@
  * Quantiles: https://en.wikipedia.org/wiki/Quantile
  */
 
+const curry = require('lodash.curry');
+
 const countPerBucket = require('./countPerBucket');
 const { split } = require('./split');
 
@@ -24,24 +26,11 @@ const { split } = require('./split');
 const sort = arr => arr.sort();
 
 /**
- * Returns a bucket function (n: number, items: array<number>) that will produce n-quantile buckets
+ * Returns n-quantile buckets using default numerical sort. This function is curried so it can be invoked with 1, 2 or 3 arguments.
+ * If less than 3 arguments are passed it will partially apply the arguments that were passed and return a function taking the remaining
+ * arguments.
  *
- * @param {Function} sortFn (items: Array<T>) => Array<T> Custom sort function. Defaults to numerical sort.
- *
- * @example Median using default numerical sort = getBucket()(2, [1,9,5,1,2,4,9,8]) => [[1, 1, 2, 4], [4, 8, 9, 9]]
- * @example Tercile = getBucket()(3, [5, 6, 7, 8, 1, 2, 3, 4] => [[1, 2, 3], [4, 5, 6], [7, 8]]
- *
- * @returns {Function} (n: number, items: Array<T>) => <Array<Array<T>> Bucket function
- */
-const getBucket = (sortFn = sort) => (n, items) => {
-    const { initialBucketLength, remainder } = countPerBucket(items.length, n);
-
-    return split(initialBucketLength, remainder, sortFn(items));
-};
-
-/**
- * Returns n-quantile buckets using default numerical sort
- *
+ * @param {Function} sortFn (items: Array<T>) => Array<T> Custom sort function. Defaults to numerical sort
  * @param {Number} n n-quantile
  * @param {Array<Number>} items Items to bucket
  *
@@ -50,28 +39,18 @@ const getBucket = (sortFn = sort) => (n, items) => {
  *
  * @returns {Array<Array<Number>>} Each sub-array is a bucket
  */
-const bucket = getBucket();
+const bucket = curry((sortFn, n, items) => {
+    const { initialBucketLength, remainder } = countPerBucket(items.length, n);
+
+    return split(initialBucketLength, remainder, sortFn(items));
+});
 
 /**
- * Returns a quantile function (n: Number, items: Array<T>) that will produce n-quantiles
+ * Returns the n-quantile set for a list of numbers. This function is curried so it can be invoked with 1, 2 or 3 arguments.
+ * If less than 3 arguments are passed it will partially apply the arguments that were passed and return a function taking the remaining
+ * arguments.
  *
  * @param {Function} sortFn (items: Array<T>) => Array<T> Custom sort function. Defaults to numerical sort
- *
- * @example Median = getQuantile()(2, [1,9,5,1,2,4,9,8]) => [4]
- * @example Tercile = getQuantile()(3, [5, 6, 7, 8, 1, 2, 3, 4] => [3, 6]
- *
- * @returns {Function} (n: Number, items: Array<T>) => Array<T> Quantile function
- */
-const getQuantile = (sortFn = sort) => (n, items) => {
-  const bucketFn = getBucket(sortFn);
-  const buckets = bucketFn(n, items);
-
-  return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);
-};
-
-/**
- * Returns the n-quantile set for a list of numbers
- *
  * @param {Number} n n-quantile
  * @param {Array<Number>} items Items to quantile
  *
@@ -80,7 +59,12 @@ const getQuantile = (sortFn = sort) => (n, items) => {
  *
  * @returns {Array<Number>} n-quantiles
  */
-const quantile = getQuantile();
+
+const quantile = curry((sortFn = sort) => (n, items) => {
+  const buckets = bucket(sortFn)(n)(items);
+
+  return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);
+});
 
 /**
  * @typedef {Object} SortByGrouping
@@ -96,12 +80,12 @@ const quantile = getQuantile();
  * @returns {SortByGrouping} Versions of bucket and quantile using the custom sort
  */
 const sortBy = sortFn => ({
-  bucket: getBucket(sortFn),
+  bucket: bucket(sortFn),
   quantile: getQuantile(sortFn),
 })
 
 module.exports = {
-  bucket,
-  quantile,
+  bucket: bucket(sort),
+  quantile: quantile(sort),
   sortBy,
 };

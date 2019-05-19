@@ -25,23 +25,27 @@ describe('splitByLength', () => {
 });
 
 describe('splitByLengthAndRemainder', () => {
-  it('all by bucket length + remainder', () => {
-    expect(splitByLengthAndRemainder(2, 0, [1, 2, 3, 4])).to.eql({
-      currentItems: [1, 2],
-      nextItems: [3, 4],
+  it('zero remainder', () => {
+    expect(splitByLengthAndRemainder(4, 0, [1, 2, 3, 4, 5, 6, 7, 8])).to.eql({
+      currentItems: [1, 2, 3, 4],
+      nextItems: [5, 6, 7, 8],
     });
   });
 
-  it('all by bucket length + remainder', () => {
-    expect(splitByLengthAndRemainder(2, 0, [1, 2, 3, 4])).to.eql({
-      currentItems: [1, 2],
-      nextItems: [3, 4],
+  it('non-zero remainder', () => {
+    expect(splitByLengthAndRemainder(2, 1, [1, 2, 3, 4, 5, 6, 7, 8])).to.eql({
+      currentItems: [1, 2, 3],
+      nextItems: [4, 5, 6, 7 ,8],
     });
   });
 });
 
 describe('split', () => {
-  it('all by bucket length + remainder', () => {
+  it('evenly', () => {
     expect(split(4, 0, [1, 2, 3, 4, 5, 6, 7, 8])).to.eql([[1, 2, 3, 4], [5, 6, 7, 8]]);
+  });
+
+  it('unevenly', () => {
+    expect(split(2, 2, [1, 2, 3, 4, 5, 6, 7, 8])).to.eql([[1, 2, 3], [4, 5, 6], [7, 8]]);
   });
 });

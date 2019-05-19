@@ -2,10 +2,17 @@ const { expect } = require('chai');
 const { split, splitWithRemainder, splitByLength } = require('./split');
 
 describe('splitByLength', () => {
-  it('by length', () => {
+  it('evenly', () => {
     expect(splitByLength(2, [1, 2, 3, 4])).to.eql({
       currentItems: [1, 2],
       nextItems: [3, 4],
+    });
+  });
+
+  it('unevenly', () => {
+    expect(splitByLength(3, [1, 2, 3, 4])).to.eql({
+      currentItems: [1, 2, 3],
+      nextItems: [4],
     });
   });
 });

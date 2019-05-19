@@ -26,6 +26,16 @@ const { split } = require('./split');
 const sort = arr => arr.sort((a, b) => a - b);
 
 /**
+ * Average two numbers
+ *
+ * @param {Number} a First operand
+ * @param {Number} b Second operand
+ *
+ * @returns {Number} Average of a and b
+ */
+const average = (a, b) => (a + b) / 2;
+
+/**
  * Returns n-quantile buckets using default numerical sort. This function is curried so it can be invoked with 1, 2 or 3 arguments.
  * If less than 3 arguments are passed it will partially apply the arguments that were passed and return a function taking the remaining
  * arguments.
@@ -51,6 +61,7 @@ const bucket = curry((sortFn, n, items) => {
  * arguments.
  *
  * @param {Function} sortFn (items: Array<T>) => Array<T> Custom sort function. Defaults to numerical sort
+ * @param {Function} avgFn (items: Array<T>) => Array<T> Custom avg function for getting quantiles for even buckets. Defaults to average.
  * @param {Number} n n-quantile
  * @param {Array<Number>} items Items to quantile
  *
@@ -60,11 +71,32 @@ const bucket = curry((sortFn, n, items) => {
  * @returns {Array<Number>} n-quantiles
  */
 
-const quantile = curry((sortFn ,n, items) => {
+const quantile = curry((sortFn, avgFn ,n, items) => {
   const buckets = bucket(sortFn)(n)(items);
 
-  return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);
+  // return buckets.slice(0, buckets.length - 1).map(b => b[b.length - 1]);
+  return buckets.reduce((acc, current, i, arr) => {
+    // if we're on the last bucket we're done
+    if (i === arr.length - 1) {
+      return acc;
+    }
+
+    let value;
+    const next = arr[i + 1]
+
+    if (current.length > next.length) {
+      // if current bucket is longer than next bucket, use the last value in current - don't average
+      value = current[current.length - 1];
+    } else {
+      // current and next are equal length so average last of current and first of next
+      value = avgFn(current[current.length - 1], next[0]);
+    }
+
+    return [...acc, value];
+  }, []);
 });
+
+const numericalQuantile = quantile(sort, average)
 
 /**
  * @typedef {Object} SortByGrouping
@@ -81,15 +113,15 @@ const quantile = curry((sortFn ,n, items) => {
  */
 const sortBy = sortFn => ({
   bucket: bucket(sortFn),
-  quantile: quantile(sortFn),
+  quantile: quantile(sortFn, average),
 })
 
 module.exports = {
   bucket: bucket(sort),
-  median: quantile(sort, 2),
-  octile: quantile(sort, 10),
-  quantile: quantile(sort),
-  quartile: quantile(sort, 4),
-  tercile: quantile(sort, 3),
+  median: numericalQuantile(2),
+  octile: numericalQuantile(10),
+  quantile: numericalQuantile(),
+  quartile: numericalQuantile(4),
+  tercile: numericalQuantile(3),
   sortBy,
 };

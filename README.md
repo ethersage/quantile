@@ -8,7 +8,7 @@ Calculates [quantiles](https://en.wikipedia.org/wiki/Quantile) and the correspon
 
 _Note: Unevenly distributed buckets that produce a remainder will always add an extra items to each previous bucket until the remainer is exhausted. In this case, earlier buckets will have 1 more item than later buckets, depending on `input.length / n`._
 
-_Note: This package will not work with input sets shorter than n. You can't yet calculate the median of a single value, for example.
+_Note: This package will not work with input sets shorter than n. You can't yet calculate the median of a single value, for example._
 
 ## Setup
 

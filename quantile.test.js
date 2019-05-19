@@ -1,6 +1,10 @@
 const expect = require('chai').expect;
 
-const { bucket, quantile } = require('./quantile');
+const {
+  bucket,
+  median,
+  quantile,
+} = require('./quantile');
 
 describe('bucket', () => {
   it('evenly', () => {
@@ -37,5 +41,12 @@ describe('quantile', () => {
         expect(quantile(3, [5, 6, 5, 3, 1, 2, 3, 4]))
         .to.eql([3, 5]);
     });
+  });
+});
+
+describe('median', () => {
+  it('evenly', () => {
+    expect(median([5, 6, 7, 8, 1, 2, 3, 4]))
+    .to.eql([4]);
   });
 });

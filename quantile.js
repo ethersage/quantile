@@ -86,6 +86,7 @@ const sortBy = sortFn => ({
 
 module.exports = {
   bucket: bucket(sort),
+  median: quantile(sort, 2),
   quantile: quantile(sort),
   sortBy,
 };

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { split, splitWithRemainder, splitByLength } = require('./split');
+const { split, splitByLength, splitByLengthAndRemainder } = require('./split');
 
 describe('splitByLength', () => {
   it('evenly', () => {
@@ -24,9 +24,16 @@ describe('splitByLength', () => {
   });
 });
 
-describe('splitWithRemainder', () => {
+describe('splitByLengthAndRemainder', () => {
   it('all by bucket length + remainder', () => {
-    expect(splitWithRemainder(splitByLength, 2, 0, [1, 2, 3, 4])).to.eql({
+    expect(splitByLengthAndRemainder(2, 0, [1, 2, 3, 4])).to.eql({
+      currentItems: [1, 2],
+      nextItems: [3, 4],
+    });
+  });
+
+  it('all by bucket length + remainder', () => {
+    expect(splitByLengthAndRemainder(2, 0, [1, 2, 3, 4])).to.eql({
       currentItems: [1, 2],
       nextItems: [3, 4],
     });

@@ -3,19 +3,21 @@
  * (splitLength: number, items: array) => { split: array, remaining: array }
  */
 
-const splitWithRemainder = (splitFn, bucketLength, remainder, items) => splitFn(bucketLength + remainder, items);
+const getSplitByLengthAndRemainder = splitFn => (bucketLength, remainder, items) => splitFn(bucketLength + remainder, items);
 
 const splitByLength = (splitLength, items) => ({
   currentItems: items.slice(0, splitLength),
   nextItems: items.slice(splitLength),
 });
 
+const splitByLengthAndRemainder = getSplitByLengthAndRemainder(splitByLength);
+
 const split = (bucketLength, remainder, nextItems, currentItems = []) => {
   if (!nextItems.length) {
     return currentItems || [];
   }
 
-  const { currentItems: current, nextItems: next } = splitWithRemainder(splitByLength, bucketLength, remainder, nextItems);
+  const { currentItems: current, nextItems: next } = splitByLengthAndRemainder(bucketLength, remainder, nextItems);
 
   return split(
     bucketLength,
@@ -26,7 +28,7 @@ const split = (bucketLength, remainder, nextItems, currentItems = []) => {
 }
 
 module.exports = {
-  splitWithRemainder,
   splitByLength,
+  splitByLengthAndRemainder,
   split,
 };

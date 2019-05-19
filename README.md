@@ -6,7 +6,9 @@
 
 Calculates [quantiles](https://en.wikipedia.org/wiki/Quantile) and the corresponding buckets. An n-quantile is a set of n - 1 numbers representing the values that compose the n - 1 boundries of evenly bucketing the original set. For example, the 2-quantile of input = [1, 2, 3] is [2] found by trying to evenly divide the input into 2 buckets of numbers and calculating the value at the boundary between the two buckets. In this case, the buckets would be [[1, 2], [3]]. Since the first bucket has an extra item than the second, the second item of the first bucket (2) is the 2-quantile, or Median.
 
-#### Note: Unevenly distributed buckets that produce a remainder will always add an extra items to each previous bucket until the remainer is exhausted. In this case, earlier buckets will have 1 more item than later buckets, depending on `input.length / n`.
+_Note: Unevenly distributed buckets that produce a remainder will always add an extra items to each previous bucket until the remainer is exhausted. In this case, earlier buckets will have 1 more item than later buckets, depending on `input.length / n`._
+
+_Note: This package will not work with input sets shorter than n. You can't yet calculate the median of a single value, for example.
 
 ## Setup
 

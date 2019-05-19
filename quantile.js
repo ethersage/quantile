@@ -23,7 +23,7 @@ const { split } = require('./split');
  *
  * @returns {Array} The sorted array
  */
-const sort = arr => arr.sort();
+const sort = arr => arr.sort((a, b) => a - b);
 
 /**
  * Returns n-quantile buckets using default numerical sort. This function is curried so it can be invoked with 1, 2 or 3 arguments.
@@ -81,12 +81,15 @@ const quantile = curry((sortFn ,n, items) => {
  */
 const sortBy = sortFn => ({
   bucket: bucket(sortFn),
-  quantile: getQuantile(sortFn),
+  quantile: quantile(sortFn),
 })
 
 module.exports = {
   bucket: bucket(sort),
   median: quantile(sort, 2),
+  octile: quantile(sort, 10),
   quantile: quantile(sort),
+  quartile: quantile(sort, 4),
+  tercile: quantile(sort, 3),
   sortBy,
 };

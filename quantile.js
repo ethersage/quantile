@@ -15,12 +15,17 @@ const countPerBucket = require('./countPerBucket');
 const { split } = require('./split');
 const sort = numbers => numbers.sort(n => n);
 
-const quantile = (sortFn, n, items) => {
+const genericQuantile = (sortFn, n, items) => {
     const { initialBucketLength, remainder } = countPerBucket(items.length, n);
 
     return split(initialBucketLength, remainder, items);
 };
 
-module.exports = quantile;
+const sortBy = sortFn => (...args) => genericQuantile(sortFn, ...args);
 
+const quantile = sortBy(i => i);
 
+module.exports = {
+  quantile,
+  sortBy,
+};
